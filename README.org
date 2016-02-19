@@ -2,4 +2,5 @@
 Working through [[http://haskellbook.com][Haskell Programming]].
 
 ** Chapter 8: Recursion
-[[file:src/Recursion.hs][{Source}]]
+- [[file:src/Recursion.hs][Recursion]]
+- [[file:src/WordNumber.hs][WordNumber]]
