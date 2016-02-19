@@ -1,0 +1,5 @@
+* haskell-programming
+Working through [[http://haskellbook.com][Haskell Programming]].
+
+** Chapter 8: Recursion
+[[file:src/Recursion.hs][{Source}]]

@@ -1,7 +1,7 @@
 name:                haskell-programming
 version:             0.1.0.0
 synopsis:            Working through Haskell Programming
-description:         Please see README.md
+description:         Please see README.org
 homepage:            http://github.com/yurrriq/haskell-programming
 license:             MIT
 license-file:        LICENSE
