@@ -2,7 +2,7 @@
 Working through [[http://haskellbook.com][Haskell Programming]].
 
 ** Chapter 8: Recursion
-- [[file:src/Recursion.hs][Recursion]]
+- [[file:src/McCarthy.hs][McCarthy]]
 - [[file:src/WordNumber.hs][WordNumber]]
 
 ** Chapter 9: Lists

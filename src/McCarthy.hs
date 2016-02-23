@@ -1,5 +1,5 @@
 {-|
-Module      : Recursion
+Module      : McCarthy
 Copyright   : (c) Eric Bailey, 2016
 License     : MIT
 
@@ -7,10 +7,10 @@ Maintainer  : Eric Bailey
 Stability   : experimental
 Portability : portable
 
-Chapter 8: Recursion
+Chapter 8: McCarthy 91
 -}
 
-module Recursion
+module McCarthy
        ( mc91
        ) where
 

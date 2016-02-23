@@ -1,5 +1,5 @@
 import           Data.Bool   (bool)
-import           Recursion   (mc91)
+import           McCarthy    (mc91)
 import           System.Exit (ExitCode (..), exitWith)
 import           Test.HUnit  (Assertion, Counts (..), Test (..), runTestTT,
                               (@=?))
