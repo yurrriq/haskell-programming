@@ -1,0 +1,159 @@
+#+SETUPFILE: haskell-programming.org
+#+OPTIONS: title:t toc:nil ^:{} tex:t inline:t
+#+TITLE: The McCarthy 91 Function
+#+DATE: <2016-02-23 Tue>
+#+LANGUAGE: en
+#+CREATOR: Emacs 24.5.1 (Org mode 8.3.3)
+
+* McCarthy.hs
+  :PROPERTIES:
+  :tangle:   ../src/McCarthy.hs
+  :noweb:    yes
+  :END:
+[[https://github.com/yurrriq/haskell-programming/blob/master/src/McCarthy.hs][Source]]
+
+First, we include some metadata for [[https://www.haskell.org/haddock/][Haddock]].
+#+BEGIN_SRC haskell
+{-|
+Module      : McCarthy
+Copyright   : (c) Eric Bailey, 2016
+License     : MIT
+
+Maintainer  : Eric Bailey
+Stability   : experimental
+Portability : portable
+
+Chapter 8: McCarthy 91
+-}
+#+END_SRC
+
+The function we're exporting is ~mc91~.
+#+BEGIN_SRC haskell
+module McCarthy
+       ( mc91
+       ) where
+#+END_SRC
+
+The McCarthy 91 function yields =n - 1= when =n > 100= and =91= otherwise.
+The function is recursive.
+
+... or as a Haskell docstring:
+#+BEGIN_SRC haskell
+-- | The McCarthy 91 function yields @n - 10@ when @n > 100@ and @91@ otherwise.
+-- The function is recursive.
+#+END_SRC
+
+It can be written in mathematical (and $\LaTeX$) notation as follows:
+#+NAME: The McCarthy 91 function
+#+HEADER: :tangle no :exports both
+#+HEADER: :imagemagick yes
+#+HEADER: :iminoptions -density 600 -resize 30% -trim +repage
+#+HEADER: :file ../resources/mc91.png
+#+BEGIN_SRC latex :results silent
+MC(n) = \begin{cases}
+  n - 10         & \text{if}\ n >   100 \\
+  MC(MC(n + 11)) & \text{if}\ n \le 100 \\
+\end{cases}
+#+END_SRC
+
+[[file:img/mc91.png]]
+
+#+BEGIN_SRC haskell :padline no :noweb no
+-- <<resources/mc91.png The McCarthy 91 function>>
+#+END_SRC
+
+The translation from maths to Haskell is quite simple.
+
+First, the type signature states the argument passed to ~mc91~ must be an
+instance of the [[http://hackage.haskell.org/package/base-4.8.2.0/docs/Prelude.html#t:Num][~Num~]] typeclass, as well as [[http://hackage.haskell.org/package/base-4.8.2.0/docs/Prelude.html#t:Ord][~Ord~]], and ~mc91~ takes one such
+argument and returns another.
+#+NAME: type-signature
+#+BEGIN_SRC haskell :tangle no
+mc91 :: (Num a, Ord a) => a -> a
+#+END_SRC
+
+The function clauses very closely mirror [[The McCarthy 91 function][their mathematical counterparts]].
+
+$n - 10\ \text{if}\ n > 100$
+#+NAME: first-clause
+#+BEGIN_SRC haskell :tangle no
+| n > 100   = n - 10
+#+END_SRC
+
+$MC(MC(n + 11))\ \text{if}\ n \le 100$
+#+NAME: otherwise-clause
+#+BEGIN_SRC haskell :tangle no
+| otherwise = mc91 . mc91 $ n + 11
+#+END_SRC
+
+Tying it all together...
+#+BEGIN_SRC haskell :padline no
+<<type-signature>>
+mc91 n <<first-clause>>
+       <<otherwise-clause>>
+#+END_SRC
+
+
+For example, let's say ~n = 99~. Since ~99 < 100~ we ignore the first function
+clause and move to the ~otherwise~ one. Next, per the definition, we add ~11~ to
+~n~ to get ~99 + 11 == 100~ and apply ~mc91~ twice. Evaluating the first
+application, i.e. ~mc91 100~, we take the ~otherwise~ clause again, since $100
+\nless 100$. Eventually a pattern emerges and we start recurring on ~mc91 $
+101 - x~, which eventually converges on ~mc91 101 == 91~ when the original ~n~
+is less than 100.
+#+BEGIN_SRC haskell :tangle no
+mc91 99 = mc91 . mc91 $ 99 + 11
+        = mc91 $ mc91 100
+        = mc91 $ mc91 . mc91 $ 100 + 11
+        = mc91 $ mc91 $ mc91 111
+        = mc91 $ mc91 101
+        = mc91 91
+        = mc91 . mc91 $ 91 + 11
+        = mc91 $ mc91 102
+        = mc91 92
+        = mc91 . mc91 $ 92 + 11
+        = mc91 $ mc91 103
+        = mc91 93
+        = mc91 . mc91 $ 93 + 11
+        = mc91 $ mc91 104
+        = mc91 94
+        = mc91 . mc91 $ 94 + 11
+        = mc91 $ mc91 105
+        = mc91 95
+        = mc91 . mc91 $ 95 + 11
+        = mc91 $ mc91 106
+        = mc91 96
+        = mc91 . mc91 $ 96 + 11
+        = mc91 $ mc91 107
+        = mc91 97
+        = mc91 . mc91 $ 97 + 11
+        = mc91 $ mc91 108
+        = mc91 98
+        = mc91 . mc91 $ 98 + 11
+        = mc91 $ mc91 109
+        = mc91 99
+        = mc91 . mc91 $ 99 + 11
+        = mc91 $ mc91 110
+        = mc91 100
+        = mc91 . mc91 $ 100 + 11
+        = mc91 $ mc91 111
+        = mc91 101
+        = 91
+#+END_SRC
+
+#+NAME: Tangle ../src/McCarthy.hs
+#+BEGIN_SRC emacs-lisp :exports none :results silent :tangle no
+;; Tangle the Haskell module so we can load it for the example.
+(org-babel-tangle)
+#+END_SRC
+#+BEGIN_SRC haskell :exports results :results silent :tangle no
+-- Load the tangle module into our *haskell* session.
+:l ../src/McCarthy.hs
+#+END_SRC
+
+Just for fun, we can map the McCarthy 91 function over a range of integers,
+namely 95 to 110.
+#+NAME: example
+#+BEGIN_SRC haskell :tangle no :exports both :results code
+map mc91 ([95..110] :: [Integer])
+#+END_SRC
