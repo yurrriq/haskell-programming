@@ -66,7 +66,7 @@ The translation from maths to Haskell is quite simple.
 
 First, the type signature states the argument passed to ~mc91~ must be an
 instance of the [[http://hackage.haskell.org/package/base-4.8.2.0/docs/Prelude.html#t:Num][~Num~]] typeclass, as well as [[http://hackage.haskell.org/package/base-4.8.2.0/docs/Prelude.html#t:Ord][~Ord~]], and ~mc91~ takes one such
-argument and returns another.
+value and returns another.
 #+NAME: type-signature
 #+BEGIN_SRC haskell :tangle no
 mc91 :: (Num a, Ord a) => a -> a
