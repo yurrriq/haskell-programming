@@ -10,7 +10,7 @@
 (let ((project              "haskell-programming")
       (base-directory       "~/src/yurrriq/haskell-programming/org/")
       (resources-directory  "~/src/yurrriq/haskell-programming/resources/")
-      (publishing-directory "~/src/yurrriq/haskell-programming/_site/"))
+      (publishing-directory "~/src/yurrriq/haskell-programming/docs/"))
   (add-to-list
    'org-publish-project-alist
    `(,project
@@ -22,7 +22,7 @@
      :recursive t
      :auto-sitemap t
      :sitemap-filename "index.org"
-     :sitemap-title ""
+     :sitemap-title "Haskell Programming"
      :sitemap-sort-files alphabetically
      :export-creator-info nil
      :export-author-info nil

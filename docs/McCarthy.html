@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- 2016-10-06 Thu 17:39 -->
+<meta  charset="utf-8">
+<meta  name="viewport" content="width=device-width, initial-scale=1">
+<title>The McCarthy 91 Function</title>
+<meta  name="generator" content="Org-mode">
+<meta  name="author" content="Eric Bailey">
+<meta  name="keywords" content="haskell, learning, haskell programming">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">The McCarthy 91 Function</h1>
+
+<div id="outline-container-orgheadline1" class="outline-2">
+<h2 id="orgheadline1">McCarthy.hs</h2>
+<div class="outline-text-2" id="text-orgheadline1">
+<p>
+<a href="https://github.com/yurrriq/haskell-programming/blob/master/src/McCarthy.hs">Source</a>
+</p>
+
+<p>
+First, we include some metadata for <a href="https://www.haskell.org/haddock/">Haddock</a>.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span style="color: #75715E;">{-|</span>
+<span style="color: #75715E;">Module      : McCarthy</span>
+<span style="color: #75715E;">Copyright   : (c) Eric Bailey, 2016</span>
+<span style="color: #75715E;">License     : MIT</span>
+
+<span style="color: #75715E;">Maintainer  : Eric Bailey</span>
+<span style="color: #75715E;">Stability   : experimental</span>
+<span style="color: #75715E;">Portability : portable</span>
+
+<span style="color: #75715E;">Chapter 8: McCarthy 91</span>
+<span style="color: #75715E;">-}</span>
+</pre>
+</div>
+
+<p>
+The function we're exporting is <code>mc91</code>.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span style="color: #F92672;">module</span> <span style="color: #66D9EF;">McCarthy</span>
+       ( mc91
+       ) <span style="color: #F92672;">where</span>
+</pre>
+</div>
+
+<p>
+The McCarthy 91 function yields <code>n - 1</code> when <code>n &gt; 100</code> and <code>91</code> otherwise.
+The function is recursive.
+</p>
+
+<p>
+&#x2026; or as a Haskell docstring:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span style="color: #75715E;">-- | The McCarthy 91 function yields @n - 10@ when @n &gt; 100@ and @91@ otherwise.</span>
+<span style="color: #75715E;">-- The function is recursive.</span>
+</pre>
+</div>
+
+<p>
+It can be written in mathematical (and \(\LaTeX\)) notation as follows:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-latex" id="orgsrcblock1">MC(n) = <span style="color: #F92672;">\begin</span>{<span style="color: #A6E22E;">cases</span>}
+  n - 10         <span style="color: #FD971F; font-weight: bold;">&amp;</span> <span style="color: #F8F8F0;">\text</span>{if}\ n &gt;   100 <span style="color: #FD971F; font-weight: bold;">\\</span>
+  MC(MC(n + 11)) <span style="color: #FD971F; font-weight: bold;">&amp;</span> <span style="color: #F8F8F0;">\text</span>{if}\ n <span style="color: #F8F8F0;">\le</span> 100 <span style="color: #FD971F; font-weight: bold;">\\</span>
+<span style="color: #F92672;">\end</span>{<span style="color: #A6E22E;">cases</span>}
+</pre>
+</div>
+
+
+<div class="figure">
+<p><img src="img/mc91.png" alt="mc91.png">
+</p>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span style="color: #75715E;">-- </span><span style="color: #75715E;">&lt;&lt;resources/mc91.png The McCarthy 91 function&gt;&gt;</span>
+</pre>
+</div>
+
+<p>
+The translation from maths to Haskell is quite simple.
+</p>
+
+<p>
+First, the type signature states the argument passed to <code>mc91</code> must be an
+instance of the <a href="http://hackage.haskell.org/package/base-4.8.2.0/docs/Prelude.html#t:Num"><code>Num</code></a> typeclass, as well as <a href="http://hackage.haskell.org/package/base-4.8.2.0/docs/Prelude.html#t:Ord"><code>Ord</code></a>, and <code>mc91</code> takes one such
+value and returns another.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-haskell" id="orgsrcblock2"><span style="color: #A6E22E;">mc91</span> <span style="color: #FD971F;">::</span> (<span style="color: #66D9EF;">Num</span> a, <span style="color: #66D9EF;">Ord</span> a) <span style="color: #FD971F;">=&gt;</span> a <span style="color: #FD971F;">-&gt;</span> a
+</pre>
+</div>
+
+<p>
+The function clauses very closely mirror <a href="#orgsrcblock1">their mathematical counterparts</a>.
+</p>
+
+<p>
+\(n - 10\ \text{if}\ n > 100\)
+</p>
+<div class="org-src-container">
+
+<pre class="src src-haskell" id="orgsrcblock3"><span style="color: #FD971F;">|</span> n <span style="color: #FD971F;">&gt;</span> 100   <span style="color: #FD971F;">=</span> n <span style="color: #FD971F;">-</span> 10
+</pre>
+</div>
+
+<p>
+\(MC(MC(n + 11))\ \text{if}\ n \le 100\)
+</p>
+<div class="org-src-container">
+
+<pre class="src src-haskell" id="orgsrcblock4"><span style="color: #FD971F;">|</span> otherwise <span style="color: #FD971F;">=</span> mc91 <span style="color: #FD971F;">.</span> mc91 <span style="color: #FD971F;">$</span> n <span style="color: #FD971F;">+</span> 11
+</pre>
+</div>
+
+<p>
+Tying it all together&#x2026;
+</p>
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span style="color: #A6E22E;">mc91</span> <span style="color: #FD971F;">::</span> (<span style="color: #66D9EF;">Num</span> a, <span style="color: #66D9EF;">Ord</span> a) <span style="color: #FD971F;">=&gt;</span> a <span style="color: #FD971F;">-&gt;</span> a
+<span style="color: #A6E22E;">mc91</span> n <span style="color: #FD971F;">|</span> n <span style="color: #FD971F;">&gt;</span> 100   <span style="color: #FD971F;">=</span> n <span style="color: #FD971F;">-</span> 10
+       <span style="color: #FD971F;">|</span> otherwise <span style="color: #FD971F;">=</span> mc91 <span style="color: #FD971F;">.</span> mc91 <span style="color: #FD971F;">$</span> n <span style="color: #FD971F;">+</span> 11
+</pre>
+</div>
+
+
+<p>
+For example, let's say <code>n = 99</code>. Since <code>99 &lt; 100</code> we ignore the first function
+clause and move to the <code>otherwise</code> one. Next, per the definition, we add <code>11</code> to
+<code>n</code> to get <code>99 + 11 == 100</code> and apply <code>mc91</code> twice. Evaluating the first
+application, i.e. <code>mc91 100</code>, we take the <code>otherwise</code> clause again, since \(100
+\nless 100\). Eventually a pattern emerges and we start recurring on <code>mc91 $
+101 - x</code>, which eventually converges on <code>mc91 101 == 91</code> when the original <code>n</code>
+is less than 100.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span style="color: #A6E22E;">mc91</span> 99 <span style="color: #FD971F;">=</span> mc91 <span style="color: #FD971F;">.</span> mc91 <span style="color: #FD971F;">$</span> 99 <span style="color: #FD971F;">+</span> 11
+        <span style="color: #FD971F;">=</span> mc91 <span style="color: #FD971F;">$</span> mc91 100
+        <span style="color: #FD971F;">=</span> mc91 <span style="color: #FD971F;">$</span> mc91 <span style="color: #FD971F;">.</span> mc91 <span style="color: #FD971F;">$</span> 100 <span style="color: #FD971F;">+</span> 11
+        <span style="color: #FD971F;">=</span> mc91 <span style="color: #FD971F;">$</span> mc91 <span style="color: #FD971F;">$</span> mc91 111
+        <span style="color: #FD971F;">=</span> mc91 <span style="color: #FD971F;">$</span> mc91 101
+        <span style="color: #FD971F;">=</span> mc91 91
+        <span style="color: #FD971F;">=</span> mc91 <span style="color: #FD971F;">.</span> mc91 <span style="color: #FD971F;">$</span> 91 <span style="color: #FD971F;">+</span> 11
+        <span style="color: #FD971F;">=</span> mc91 <span style="color: #FD971F;">$</span> mc91 102
+        <span style="color: #FD971F;">=</span> mc91 92
+        <span style="color: #FD971F;">=</span> mc91 <span style="color: #FD971F;">.</span> mc91 <span style="color: #FD971F;">$</span> 92 <span style="color: #FD971F;">+</span> 11
+        <span style="color: #FD971F;">=</span> mc91 <span style="color: #FD971F;">$</span> mc91 103
+        <span style="color: #FD971F;">=</span> mc91 93
+        <span style="color: #FD971F;">=</span> mc91 <span style="color: #FD971F;">.</span> mc91 <span style="color: #FD971F;">$</span> 93 <span style="color: #FD971F;">+</span> 11
+        <span style="color: #FD971F;">=</span> mc91 <span style="color: #FD971F;">$</span> mc91 104
+        <span style="color: #FD971F;">=</span> mc91 94
+        <span style="color: #FD971F;">=</span> mc91 <span style="color: #FD971F;">.</span> mc91 <span style="color: #FD971F;">$</span> 94 <span style="color: #FD971F;">+</span> 11
+        <span style="color: #FD971F;">=</span> mc91 <span style="color: #FD971F;">$</span> mc91 105
+        <span style="color: #FD971F;">=</span> mc91 95
+        <span style="color: #FD971F;">=</span> mc91 <span style="color: #FD971F;">.</span> mc91 <span style="color: #FD971F;">$</span> 95 <span style="color: #FD971F;">+</span> 11
+        <span style="color: #FD971F;">=</span> mc91 <span style="color: #FD971F;">$</span> mc91 106
+        <span style="color: #FD971F;">=</span> mc91 96
+        <span style="color: #FD971F;">=</span> mc91 <span style="color: #FD971F;">.</span> mc91 <span style="color: #FD971F;">$</span> 96 <span style="color: #FD971F;">+</span> 11
+        <span style="color: #FD971F;">=</span> mc91 <span style="color: #FD971F;">$</span> mc91 107
+        <span style="color: #FD971F;">=</span> mc91 97
+        <span style="color: #FD971F;">=</span> mc91 <span style="color: #FD971F;">.</span> mc91 <span style="color: #FD971F;">$</span> 97 <span style="color: #FD971F;">+</span> 11
+        <span style="color: #FD971F;">=</span> mc91 <span style="color: #FD971F;">$</span> mc91 108
+        <span style="color: #FD971F;">=</span> mc91 98
+        <span style="color: #FD971F;">=</span> mc91 <span style="color: #FD971F;">.</span> mc91 <span style="color: #FD971F;">$</span> 98 <span style="color: #FD971F;">+</span> 11
+        <span style="color: #FD971F;">=</span> mc91 <span style="color: #FD971F;">$</span> mc91 109
+        <span style="color: #FD971F;">=</span> mc91 99
+        <span style="color: #FD971F;">=</span> mc91 <span style="color: #FD971F;">.</span> mc91 <span style="color: #FD971F;">$</span> 99 <span style="color: #FD971F;">+</span> 11
+        <span style="color: #FD971F;">=</span> mc91 <span style="color: #FD971F;">$</span> mc91 110
+        <span style="color: #FD971F;">=</span> mc91 100
+        <span style="color: #FD971F;">=</span> mc91 <span style="color: #FD971F;">.</span> mc91 <span style="color: #FD971F;">$</span> 100 <span style="color: #FD971F;">+</span> 11
+        <span style="color: #FD971F;">=</span> mc91 <span style="color: #FD971F;">$</span> mc91 111
+        <span style="color: #FD971F;">=</span> mc91 101
+        <span style="color: #FD971F;">=</span> 91
+</pre>
+</div>
+
+<p>
+Just for fun, we can map the McCarthy 91 function over a range of integers,
+namely 95 to 110.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-haskell" id="orgsrcblock5"><span style="color: #A6E22E;">map</span> mc91 ([95<span style="color: #FD971F;">..</span>110] <span style="color: #FD971F;">::</span> [<span style="color: #66D9EF;">Integer</span>])
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-haskell">[91,91,91,91,91,91,91,92,93,94,95,96,97,98,99,100]
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>Generated by <span class="author">Eric Bailey</span> on <span class="date">2016-10-06 Thu 17:39</span> using <span class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.1.1 (<a href="http://orgmode.org">Org</a> mode 8.3.6)</span>.
+</div>
+</body>
+</html>

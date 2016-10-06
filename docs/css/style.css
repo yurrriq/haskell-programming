@@ -1,0 +1,56 @@
+/* Local Variables:     */
+/* css-indent-offset: 2 */
+/* End:                 */
+
+@import url(https://fonts.googleapis.com/css?family=Reenie+Beanie);
+
+body, #content a {
+  color: #111;
+}
+
+body {
+  font-family: 'Reenie Beanie', cursive;
+  font-size: 2rem;
+  /* font-weight: bold; */
+  background: #272822; /* #1d1e19; */
+  width: 56.5rem;
+  margin: 0 auto;
+}
+
+.src:before {
+  color: black;
+}
+.src, .example {
+  color: white;
+  background: #272822; /* #1d1e19; */
+  white-space: pre-wrap;
+  /* word-wrap: normal; */
+  width: 48.5rem;
+}
+.org-src-container, .example {
+  font-size: 11pt;
+}
+.org-src-container pre, .example {
+  padding: .5rem;
+}
+
+#content {
+  /* http://lea.verou.me/css3patterns/#lined-paper */
+  background-color: #FEFEFA; /* rgb(243, 229, 206); */
+  background-image:
+  /* linear-gradient(90deg, transparent 79px, #abced4 79px, #abced4 81px, transparent 81px), */
+  linear-gradient(#ccc .05rem, transparent .05rem);
+  background-size: 100% 1.38rem;
+
+  /* background: #fdf5db; */
+  padding: 2rem;
+}
+
+#text-table-of-contents {
+  background: #fdf5db; /* rgb(243, 229, 206); */
+  border: 1px solid #272822;
+}
+
+#postamble, #postamble a {
+  color: #fdf5db; /* rgb(243, 229, 206); */
+}

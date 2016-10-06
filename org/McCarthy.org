@@ -2,8 +2,6 @@
 #+OPTIONS: title:t toc:nil ^:{} tex:t inline:t
 #+TITLE: The McCarthy 91 Function
 #+DATE: <2016-02-23 Tue>
-#+LANGUAGE: en
-#+CREATOR: Emacs 24.5.1 (Org mode 8.3.3)
 
 * McCarthy.hs
   :PROPERTIES:
