@@ -1,0 +1,116 @@
+#+SETUPFILE: haskell-programming.org
+#+OPTIONS: title:t toc:nil ^:{} tex:t inline:t
+#+TITLE: Convert Numbers to Words
+#+DATE: <2016-10-06 Thu>
+
+* WordNumber.hs
+  :PROPERTIES:
+  :tangle:   ../src/WordNumber.hs
+  :noweb:    yes
+  :END:
+[[https://github.com/yurrriq/haskell-programming/blob/master/src/WordNumber.hs][Source]]
+
+First, we include some metadata for [[https://www.haskell.org/haddock/][Haddock]].
+#+BEGIN_SRC haskell
+{-|
+Module      : WordNumber
+Copyright   : (c) Eric Bailey, 2016
+License     : MIT
+
+Maintainer  : Eric Bailey
+Stability   : experimental
+Portability : portable
+
+Chapter 8: WordNumber
+-}
+#+END_SRC
+
+Export ~digitToWord~, ~digits~ and ~wordNumber~.
+#+BEGIN_SRC haskell
+module WordNumber
+       ( digitToWord
+       , digits
+       , wordNumber
+       ) where
+#+END_SRC
+
+~import~ some arrow functions and ~Data.List~'s ~intercalate~.
+#+BEGIN_SRC haskell
+import           Control.Arrow (arr, (***), (>>>))
+import           Data.List     (intercalate)
+#+END_SRC
+
+Given a digit, ~digitsToWord~ returns its corresponding English word, e.g.
+#+BEGIN_SRC haskell :tangle no
+digitToWord 3 == "three"
+#+END_SRC
+
+#+BEGIN_SRC haskell :exports none
+-- | Given a digit, return its corresponding English word.
+#+END_SRC
+#+BEGIN_SRC haskell :padline no
+digitToWord :: Int -> String
+#+END_SRC
+
+N.B. The book only specifies =1= through =9=, but =0= is included here for
+completeness.
+#+BEGIN_SRC haskell :padline no
+digitToWord 0 = "zero"
+digitToWord 1 = "one"
+digitToWord 2 = "two"
+digitToWord 3 = "three"
+digitToWord 4 = "four"
+digitToWord 5 = "five"
+digitToWord 6 = "six"
+digitToWord 7 = "seven"
+digitToWord 8 = "eight"
+digitToWord 9 = "nine"
+#+END_SRC
+
+A valid digit is a [[https://en.wikipedia.org/wiki/Natural_number][natural number]] =n= s.t. =n ≤ 9=, i.e.
+#+NAME: Valid digits
+#+HEADER: :tangle no :exports results
+#+HEADER: :imagemagick yes
+#+HEADER: :iminoptions -density 600 -resize 30% -trim +repage
+#+HEADER: :file ../resources/digitToWord.png
+#+BEGIN_SRC latex :results silent
+\forall n \in \mathbb{N}\ n \le 9
+#+END_SRC
+
+[[file:img/digitToWord.png]]
+
+Any other ~Int~ is invalid.
+#+BEGIN_SRC haskell :padline no
+digitToWord _ = error "Invalid digit"
+#+END_SRC
+
+Given an ~Int~, ~digits~ returns a list of its digits, e.g.
+#+BEGIN_SRC haskell :tangle no
+digits 123 == [1,2,3]
+#+END_SRC
+
+#+BEGIN_SRC haskell :exports none
+-- | Given an integer, return a list of its digits.
+#+END_SRC
+#+BEGIN_SRC haskell :padline no
+digits :: Int -> [Int]
+digits n | n >= 10    = go $ n `divMod` 10
+         | otherwise = [n]
+  where go :: (Int, Int) -> [Int]
+        go = digits *** (:[]) >>> arr uncurry (++)
+#+END_SRC
+
+Given an ~Int~, ~wordNumber~ returns a ~String~ composed of the name of each
+digit, separated by hyphens, e.g.
+#+BEGIN_SRC haskell :tangle no
+wordNumber 123 == "one-two-three"
+#+END_SRC
+
+#+BEGIN_SRC haskell :exports none
+-- | Given an integer, return a string composed of the name of each digit,
+-- separated by hyphens.
+#+END_SRC
+#+BEGIN_SRC haskell :padline no
+wordNumber :: Int -> String
+wordNumber = intercalate "-" . map digitToWord . digits
+#+END_SRC

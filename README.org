@@ -3,7 +3,7 @@ Working through [[http://haskellbook.com][Haskell Programming]].
 
 ** Chapter 8: Recursion
 - [[http://yurrriq.github.io/haskell-programming/McCarthy.html][McCarthy]]
-- [[file:src/WordNumber.hs][WordNumber]]
+- [[http://yurrriq.github.io/haskell-programming/WordNumber.html][WordNumber]]
 
 ** Chapter 9: Lists
 - [[file:src/Cipher.hs][Cipher]]

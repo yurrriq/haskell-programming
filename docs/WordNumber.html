@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- 2016-10-06 Thu 18:11 -->
+<meta  charset="utf-8">
+<meta  name="viewport" content="width=device-width, initial-scale=1">
+<title>Convert Numbers to Words</title>
+<meta  name="generator" content="Org-mode">
+<meta  name="author" content="Eric Bailey">
+<meta  name="keywords" content="haskell, learning, haskell programming">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Convert Numbers to Words</h1>
+
+<div id="outline-container-orgheadline1" class="outline-2">
+<h2 id="orgheadline1">WordNumber.hs</h2>
+<div class="outline-text-2" id="text-orgheadline1">
+<p>
+<a href="https://github.com/yurrriq/haskell-programming/blob/master/src/McCarthy.hs">Source</a>
+</p>
+
+<p>
+First, we include some metadata for <a href="https://www.haskell.org/haddock/">Haddock</a>.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span style="color: #75715E;">{-|</span>
+<span style="color: #75715E;">Module      : WordNumber</span>
+<span style="color: #75715E;">Copyright   : (c) Eric Bailey, 2016</span>
+<span style="color: #75715E;">License     : MIT</span>
+
+<span style="color: #75715E;">Maintainer  : Eric Bailey</span>
+<span style="color: #75715E;">Stability   : experimental</span>
+<span style="color: #75715E;">Portability : portable</span>
+
+<span style="color: #75715E;">Chapter 8: WordNumber</span>
+<span style="color: #75715E;">-}</span>
+</pre>
+</div>
+
+<p>
+Export <code>digitToWord</code>, <code>digits</code> and <code>wordNumber</code>.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span style="color: #F92672;">module</span> <span style="color: #66D9EF;">WordNumber</span>
+       ( digitToWord
+       , digits
+       , wordNumber
+       ) <span style="color: #F92672;">where</span>
+</pre>
+</div>
+
+<p>
+<code>import</code> some arrow functions and <code>Data.List</code>'s <code>intercalate</code>.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span style="color: #F92672;">import</span>           <span style="color: #66D9EF;">Control.Arrow</span> (arr, (<span style="color: #FD971F;">***</span>), (<span style="color: #FD971F;">&gt;&gt;&gt;</span>))
+<span style="color: #F92672;">import</span>           <span style="color: #66D9EF;">Data.List</span>     (intercalate)
+</pre>
+</div>
+
+<p>
+Given a digit, <code>digitsToWord</code> returns its corresponding English word, e.g.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span style="color: #A6E22E;">digitToWord</span> 3 <span style="color: #FD971F;">==</span> <span style="color: #E6DB74;">"three"</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span style="color: #A6E22E;">digitToWord</span> <span style="color: #FD971F;">::</span> <span style="color: #66D9EF;">Int</span> <span style="color: #FD971F;">-&gt;</span> <span style="color: #66D9EF;">String</span>
+</pre>
+</div>
+
+<p>
+N.B. The book only specifies <code>1</code> through <code>9</code>, but <code>0</code> is included here for
+completeness.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span style="color: #A6E22E;">digitToWord</span> 0 <span style="color: #FD971F;">=</span> <span style="color: #E6DB74;">"zero"</span>
+<span style="color: #A6E22E;">digitToWord</span> 1 <span style="color: #FD971F;">=</span> <span style="color: #E6DB74;">"one"</span>
+<span style="color: #A6E22E;">digitToWord</span> 2 <span style="color: #FD971F;">=</span> <span style="color: #E6DB74;">"two"</span>
+<span style="color: #A6E22E;">digitToWord</span> 3 <span style="color: #FD971F;">=</span> <span style="color: #E6DB74;">"three"</span>
+<span style="color: #A6E22E;">digitToWord</span> 4 <span style="color: #FD971F;">=</span> <span style="color: #E6DB74;">"four"</span>
+<span style="color: #A6E22E;">digitToWord</span> 5 <span style="color: #FD971F;">=</span> <span style="color: #E6DB74;">"five"</span>
+<span style="color: #A6E22E;">digitToWord</span> 6 <span style="color: #FD971F;">=</span> <span style="color: #E6DB74;">"six"</span>
+<span style="color: #A6E22E;">digitToWord</span> 7 <span style="color: #FD971F;">=</span> <span style="color: #E6DB74;">"seven"</span>
+<span style="color: #A6E22E;">digitToWord</span> 8 <span style="color: #FD971F;">=</span> <span style="color: #E6DB74;">"eight"</span>
+<span style="color: #A6E22E;">digitToWord</span> 9 <span style="color: #FD971F;">=</span> <span style="color: #E6DB74;">"nine"</span>
+</pre>
+</div>
+
+<p>
+A valid digit is a <a href="https://en.wikipedia.org/wiki/Natural_number">natural number</a> <code>n</code> s.t. <code>n ≤ 9</code>, i.e.
+<img src="img/digitToWord.png" alt="digitToWord.png">
+</p>
+
+<p>
+Any other <code>Int</code> is invalid.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span style="color: #A6E22E;">digitToWord</span> <span style="color: #F92672;">_</span> <span style="color: #FD971F;">=</span> error <span style="color: #E6DB74;">"Invalid digit"</span>
+</pre>
+</div>
+
+<p>
+Given an <code>Int</code>, <code>digits</code> returns a list of its digits, e.g.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span style="color: #A6E22E;">digits</span> 123 <span style="color: #FD971F;">==</span> [1,2,3]
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span style="color: #A6E22E;">digits</span> <span style="color: #FD971F;">::</span> <span style="color: #66D9EF;">Int</span> <span style="color: #FD971F;">-&gt;</span> [<span style="color: #66D9EF;">Int</span>]
+<span style="color: #A6E22E;">digits</span> n <span style="color: #FD971F;">|</span> n <span style="color: #FD971F;">&gt;=</span> 10    <span style="color: #FD971F;">=</span> go <span style="color: #FD971F;">$</span> n <span style="color: #FD971F;">`divMod`</span> 10
+         <span style="color: #FD971F;">|</span> otherwise <span style="color: #FD971F;">=</span> [n]
+  <span style="color: #F92672;">where</span> go <span style="color: #FD971F;">::</span> (<span style="color: #66D9EF;">Int</span>, <span style="color: #66D9EF;">Int</span>) <span style="color: #FD971F;">-&gt;</span> [<span style="color: #66D9EF;">Int</span>]
+        go <span style="color: #FD971F;">=</span> digits <span style="color: #FD971F;">***</span> (<span style="color: #66D9EF;">:[]</span>) <span style="color: #FD971F;">&gt;&gt;&gt;</span> arr uncurry (<span style="color: #FD971F;">++</span>)
+</pre>
+</div>
+
+<p>
+Given an <code>Int</code>, <code>wordNumber</code> returns a <code>String</code> composed of the name of each
+digit, separated by hyphens, e.g.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span style="color: #A6E22E;">wordNumber</span> 123 <span style="color: #FD971F;">==</span> <span style="color: #E6DB74;">"one-two-three"</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span style="color: #A6E22E;">wordNumber</span> <span style="color: #FD971F;">::</span> <span style="color: #66D9EF;">Int</span> <span style="color: #FD971F;">-&gt;</span> <span style="color: #66D9EF;">String</span>
+<span style="color: #A6E22E;">wordNumber</span> <span style="color: #FD971F;">=</span> intercalate <span style="color: #E6DB74;">"-"</span> <span style="color: #FD971F;">.</span> map digitToWord <span style="color: #FD971F;">.</span> digits
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p>Generated by <span class="author">Eric Bailey</span> on <span class="date">2016-10-06 Thu 18:11</span> using <span class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.1.1 (<a href="http://orgmode.org">Org</a> mode 8.3.6)</span>.
+</div>
+</body>
+</html>

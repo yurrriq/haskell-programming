@@ -21,7 +21,6 @@ import           Data.List     (intercalate)
 
 -- | Given a digit, return its corresponding English word.
 digitToWord :: Int -> String
--- N.B. The book only specifies 1-9, but 0 is included here for completeness.
 digitToWord 0 = "zero"
 digitToWord 1 = "one"
 digitToWord 2 = "two"
