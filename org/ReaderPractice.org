@@ -1,0 +1,139 @@
+#+SETUPFILE: haskell-programming.org
+#+OPTIONS: title:t toc:nil ^:{} tex:t inline:t
+#+TITLE: Reader Practice
+#+DATE: <2016-10-06 Thu>
+
+* WordNumber.hs
+  :PROPERTIES:
+  :tangle:   ../src/ReaderPractice.hs
+  :noweb:    yes
+  :END:
+[[https://github.com/yurrriq/haskell-programming/blob/master/src/WordNumber.hs][Source]]
+
+First, we include some metadata for [[https://www.haskell.org/haddock/][Haddock]].
+#+BEGIN_SRC haskell
+{-|
+Module      : ReaderPractice
+Copyright   : (c) Eric Bailey, 2016
+License     : MIT
+
+Maintainer  : Eric Bailey
+Stability   : experimental
+Portability : portable
+
+Chapter 22: Reader Practice
+-}
+#+END_SRC
+
+#+BEGIN_SRC haskell
+module ReaderPractice where
+
+import Control.Applicative
+import Data.Maybe
+
+x, y, z :: [Integer]
+x = [1, 2, 3]
+y = [4, 5, 6]
+z = [7, 8, 9]
+#+END_SRC
+
+Zip ~x~ and ~y~ using ~3~ as the ~lookup~ key.
+#+NAME: xs type
+#+BEGIN_SRC haskell :tangle no
+xs :: Maybe Integer
+#+END_SRC
+
+Zip ~y~ and ~z~ using ~6~ as the ~lookup~ key.
+#+NAME: ys type
+#+BEGIN_SRC haskell :tangle no
+ys :: Maybe Integer
+#+END_SRC
+
+Zip ~x~ and ~y~ using ~4~ as the ~lookup~ key.
+#+BEGIN_SRC haskell
+zs :: Maybe Integer
+zs = lookup 4 $ zip x y
+#+END_SRC
+
+Now zip ~x~ and ~z~ using a variable ~lookup~ key.
+#+NAME: z' type
+#+BEGIN_SRC haskell :tangle no
+z' :: Integer -> Maybe Integer
+#+END_SRC
+
+#+NAME: x1 type
+#+BEGIN_SRC haskell :tangle no
+x1 :: Maybe (Integer, Integer)
+#+END_SRC
+
+#+NAME: x2 type
+#+BEGIN_SRC haskell :tangle no
+x2 :: Maybe (Integer, Integer)
+#+END_SRC
+
+#+NAME: x3 type
+#+BEGIN_SRC haskell :tangle no
+x3 :: Integer -> (Maybe Integer, Maybe Integer)
+#+END_SRC
+
+#+BEGIN_SRC haskell
+<<xs type>>
+xs = lookup 3 $ zip x y
+#+END_SRC
+
+#+BEGIN_SRC haskell
+<<ys type>>
+ys = lookup 6 $ zip y z
+#+END_SRC
+
+#+BEGIN_SRC haskell
+<<z' type>>
+z' n = lookup n $ zip x z
+#+END_SRC
+
+#+BEGIN_SRC haskell
+<<x1 type>>
+x1 = liftA2 (,) xs ys
+#+END_SRC
+
+#+BEGIN_SRC haskell
+<<x2 type>>
+x2 = liftA2 (,) ys zs
+#+END_SRC
+
+#+BEGIN_SRC haskell
+<<x3 type>>
+x3 n = (z' n, z' n)
+#+END_SRC
+
+#+BEGIN_SRC haskell
+summed :: Num c => (c, c) -> c
+summed = uncurry (+)
+#+END_SRC
+
+#+BEGIN_SRC haskell
+bolt :: Integer -> Bool
+bolt = liftA2 (&&) (>3) (<8)
+#+END_SRC
+
+#+BEGIN_SRC haskell
+main :: IO ()
+main = do
+  print $ sequenceA [Just 3, Just 2, Just 1]
+  print $ sequenceA [x, y]
+  print $ sequenceA [xs, ys]
+  let s' = summed <$> ((,) <$> xs <*> ys)
+  print $ s'
+  print $ fmap summed ((,) <$> xs <*> zs)
+  print $ bolt 7
+  print $ fmap bolt z
+  print $ sequenceA [(>3), (<8), even] 7
+  print $ foldr1 (&&) (sequA 4)
+  print $ sequA (fromMaybe 0 s')
+  print $ bolt (fromMaybe 0 ys)
+#+END_SRC
+
+#+BEGIN_SRC haskell
+sequA :: Integral a => a -> [Bool]
+sequA = sequenceA [(>3), (<8), even]
+#+END_SRC

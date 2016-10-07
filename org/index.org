@@ -1,4 +1,5 @@
 #+TITLE: Haskell Programming
 
    + [[file:WordNumber.org][Convert Numbers to Words]]
+   + [[file:ReaderPractice.org][Reader Practice]]
    + [[file:McCarthy.org][The McCarthy 91 Function]]
