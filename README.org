@@ -7,3 +7,6 @@ Working through [[http://haskellbook.com][Haskell Programming]].
 
 ** Chapter 9: Lists
 - [[file:src/Cipher.hs][Cipher]]
+
+** Chapter 22: Reader
+- [[file:src/ReaderPractice.hs][ReaderPractice]]

@@ -3,12 +3,12 @@
 #+TITLE: Reader Practice
 #+DATE: <2016-10-06 Thu>
 
-* WordNumber.hs
+* ReaderPractice.hs
   :PROPERTIES:
   :tangle:   ../src/ReaderPractice.hs
   :noweb:    yes
   :END:
-[[https://github.com/yurrriq/haskell-programming/blob/master/src/WordNumber.hs][Source]]
+[[https://github.com/yurrriq/haskell-programming/blob/master/src/ReaderPractice.hs][Source]]
 
 First, we include some metadata for [[https://www.haskell.org/haddock/][Haddock]].
 #+BEGIN_SRC haskell
