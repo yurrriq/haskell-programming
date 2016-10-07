@@ -52,8 +52,8 @@ digitToWord 3 == "three"
 digitToWord :: Int -> String
 #+END_SRC
 
-N.B. The book only specifies =1= through =9=, but =0= is included here for
-completeness.
+A valid digit is a [[https://en.wikipedia.org/wiki/Natural_number][natural number]] less than or equal to nine, i.e.
+$\forall n \in \mathbb{N}\ n \le 9$.
 #+BEGIN_SRC haskell :padline no
 digitToWord 0 = "zero"
 digitToWord 1 = "one"
@@ -67,17 +67,8 @@ digitToWord 8 = "eight"
 digitToWord 9 = "nine"
 #+END_SRC
 
-A valid digit is a [[https://en.wikipedia.org/wiki/Natural_number][natural number]] =n= s.t. =n ≤ 9=, i.e.
-#+NAME: Valid digits
-#+HEADER: :tangle no :exports results
-#+HEADER: :imagemagick yes
-#+HEADER: :iminoptions -density 600 -resize 30% -trim +repage
-#+HEADER: :file ../resources/digitToWord.png
-#+BEGIN_SRC latex :results silent
-\forall n \in \mathbb{N}\ n \le 9
-#+END_SRC
-
-[[file:img/digitToWord.png]]
+N.B. The book only specifies =1= through =9=, but =0= is included here for
+completeness.
 
 Any other ~Int~ is invalid.
 #+BEGIN_SRC haskell :padline no

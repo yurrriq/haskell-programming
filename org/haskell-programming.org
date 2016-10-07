@@ -2,5 +2,6 @@
 #+HTML_DOCTYPE: html5
 #+KEYWORDS: haskell, learning, haskell programming
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="css/style.css">
+#+HTML_HEAD: <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 #+LANGUAGE: en
 # #+CREATOR: Emacs 25.1.1 (Org mode 8.3.6)

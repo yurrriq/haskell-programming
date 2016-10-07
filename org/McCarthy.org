@@ -41,24 +41,13 @@ The function is recursive.
 -- The function is recursive.
 #+END_SRC
 
-It can be written in mathematical (and $\LaTeX$) notation as follows:
-#+NAME: The McCarthy 91 function
-#+HEADER: :tangle no :exports both
-#+HEADER: :imagemagick yes
-#+HEADER: :iminoptions -density 600 -resize 30% -trim +repage
-#+HEADER: :file ../resources/mc91.png
-#+BEGIN_SRC latex :results silent
+It can be written in mathematical notation as follows:
+\begin{equation*}
 MC(n) = \begin{cases}
   n - 10         & \text{if}\ n >   100 \\
   MC(MC(n + 11)) & \text{if}\ n \le 100 \\
 \end{cases}
-#+END_SRC
-
-[[file:img/mc91.png]]
-
-#+BEGIN_SRC haskell :padline no :noweb no
--- <<resources/mc91.png The McCarthy 91 function>>
-#+END_SRC
+\end{equation*}
 
 The translation from maths to Haskell is quite simple.
 
@@ -70,7 +59,7 @@ value and returns another.
 mc91 :: (Num a, Ord a) => a -> a
 #+END_SRC
 
-The function clauses very closely mirror [[The McCarthy 91 function][their mathematical counterparts]].
+The function clauses very closely mirror their mathematical counterparts.
 
 $n - 10\ \text{if}\ n > 100$
 #+NAME: first-clause
